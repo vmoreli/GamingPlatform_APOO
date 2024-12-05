@@ -1,0 +1,11 @@
+{% extends "gameplatform_app/layout.html" %}
+{% block title %}Avaliar Minigame{% endblock %}
+{% block content %}
+<h1>Avaliar Minigame</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Enviar Avaliação</button>
+</form>
+<a href="{% url 'detalhes_minigame' id=id %}">Voltar</a>
+{% endblock %}

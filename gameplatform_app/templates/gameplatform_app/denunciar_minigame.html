@@ -1,0 +1,11 @@
+{% extends "gameplatform_app/layout.html" %}
+{% block title %}Denunciar Minigame{% endblock %}
+{% block content %}
+<h1>Denunciar Minigame</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Enviar Denúncia</button>
+</form>
+<a href="{% url 'detalhes_minigame' id=id %}">Voltar</a>
+{% endblock %}

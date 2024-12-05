@@ -1,0 +1,27 @@
+{% extends "gameplatform_app/layout.html" %}
+
+{% block title %}
+Página Inicial
+{% endblock %}
+
+{% block content %}
+    {% if usuario %}
+    <h1>Home, {{ usuario.nome }}</h1>
+
+    <div>
+        <h2>Minigames</h2>
+        <ul id="minigame-list">
+            {% for minigame in minigames %}
+            <li>
+                <a href="{% url 'detalhes_minigame' minigame.id %}">{{ minigame.nome }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+
+    {% else %}
+    <h1>Você precisa estar logado para utilizar o sistema.</h1>
+    {% endif %}
+
+{% endblock %}

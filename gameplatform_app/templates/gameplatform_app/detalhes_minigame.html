@@ -1,0 +1,41 @@
+{% extends "gameplatform_app/layout.html" %}
+
+{% block title %}
+{{minigame.nome}}
+{% endblock %}
+
+{% block content %}
+    {% if usuario %}
+    <h1>{{ minigame.nome }}</h1>
+    <p><strong>Descrição:</strong> {{ minigame.descricao }}</p>
+    <p><strong>Estado:</strong> {{ minigame.estado }}</p>
+
+    <h2>Opções</h2>
+    <ul>
+        <li><a href="{{ minigame.url }}">Jogar</a></li>
+        <li><a href="{% url 'avaliar_minigame' id=minigame.id %}">Avaliar</a></li>
+        <li><a href="{% url 'denunciar_minigame' id=minigame.id %}">Denunciar</a></li>
+    </ul>
+
+    <a href="{% url 'home' %}">Voltar</a>
+
+    <h2>Avaliações de outros usuários</h2>
+    {% if avaliacoes %}
+        <ul>
+            {% for avaliacao in avaliacoes %}
+                <li>
+                    <strong>{{ avaliacao.usuario.nome }}</strong> - 
+                    {{ avaliacao.estrelas }} estrelas
+                    <br>
+                    <em>{{ avaliacao.review }}</em>
+                    <br>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Nenhuma avaliação disponível para este minigame.</p>
+    {% endif %}
+
+    {% endif %}
+
+{% endblock %}

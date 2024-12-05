@@ -1,0 +1,12 @@
+{% extends "gameplatform_app/layout.html" %}
+{% block title %}Cadastro{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Cadastro</h2>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Cadastrar</button>
+    </form>
+</div>
+{% endblock %}
