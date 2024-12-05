@@ -46,3 +46,6 @@ class AvaliacaoForm(forms.Form):
 
 class DenunciaForm(forms.Form):
     detalhes = forms.CharField(widget=forms.Textarea, label='Detalhes da Denúncia')
+
+class RelatarBugsForm(forms.Form):
+    detalhes = forms.CharField(widget=forms.Textarea, label='Detalhes do Bug')

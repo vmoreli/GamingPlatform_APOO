@@ -1,0 +1,10 @@
+{% extends "gameplatform_app/layout.html" %}
+{% block title %}Reportar Bug{% endblock %}
+{% block content %}
+<h1>Reportar Bug</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Reportar</button>
+</form>
+{% endblock %}

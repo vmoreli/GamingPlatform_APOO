@@ -9,4 +9,5 @@ urlpatterns = [
     path('minigame/<int:id>/', views.detalhes_minigame, name='detalhes_minigame'),
     path('minigame/<int:id>/avaliar/', views.avaliar_minigame, name='avaliar_minigame'),
     path('minigame/<int:id>/denunciar/', views.denunciar_minigame, name='denunciar_minigame'),
+    path('minigame/<int:id>/reportar-bug/<str:alvo>/', views.reportar_bug, name='reportar_bug'),
 ]

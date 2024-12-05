@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import login, logout
-from .forms import CadastroForm, LoginForm, AvaliacaoForm, DenunciaForm
+from .forms import CadastroForm, LoginForm, AvaliacaoForm, DenunciaForm, RelatarBugsForm
 from django.shortcuts import render, get_object_or_404
-from .models import Minigame, Jogar, UsuarioNaoAdministrativo
+from .models import Minigame, Jogar, UsuarioNaoAdministrativo, RelatoBugs
 
 def home(request):
     if not request.usuario:  # Verifica se o usuário está autenticado
@@ -109,4 +109,36 @@ def denunciar_minigame(request, id):
         'form': form,
         'usuario': request.usuario,
         'id':id,
+    })
+
+def reportar_bug(request, id, alvo):
+    """
+    View para relatar bugs. O alvo é definido pelo parâmetro 'alvo', que pode ser 'minigame' ou 'plataforma'.
+    """
+    jogo = None
+    if alvo == 'minigame':
+        jogo = get_object_or_404(Jogar, usuario=request.usuario, minigame_id=id)
+
+    if request.method == 'POST':
+        form = RelatarBugsForm(request.POST)
+        
+        if form.is_valid():
+            detalhes = form.cleaned_data['detalhes']
+            
+            # Cria o objeto RelatoBugs e define os campos
+            bug = RelatoBugs(
+                jogar=jogo if alvo == 'minigame' else None,
+                alvo=alvo,
+                detalhes=detalhes
+            )
+            bug.save()
+
+            return redirect('home')
+    else:
+        form = RelatarBugsForm()
+
+    return render(request, 'gameplatform_app/reportar_bug.html', {
+        'form': form,
+        'usuario': request.usuario,
+        'alvo': alvo,
     })

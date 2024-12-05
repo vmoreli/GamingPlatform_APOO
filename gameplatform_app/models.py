@@ -71,3 +71,20 @@ class Jogar(models.Model):
 
     def __str__(self):
         return f'{self.usuario.nome} jogou {self.minigame.nome}'
+    
+class RelatoBugs(models.Model):
+    ALVO_CHOICES = [
+        ('minigame', 'Minigame'),
+        ('plataforma', 'Plataforma'),
+    ]
+    
+    jogar = models.ForeignKey(Jogar, on_delete=models.CASCADE, related_name="bugs", null=True, blank=True)
+    alvo = models.CharField(max_length=20, choices=ALVO_CHOICES)
+    detalhes = models.TextField()
+
+    def __str__(self):
+        return f"Bug relatado ({self.alvo}): {self.detalhes[:30]}"
+    
+    def set_detalhes(self, detalhes):
+        self.detalhes = detalhes
+        self.save()
