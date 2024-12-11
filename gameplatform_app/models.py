@@ -9,8 +9,8 @@ class Usuario(models.Model):
     enderecoEmail = models.CharField(max_length=100)
     foto = models.ImageField(upload_to='usuarios/fotos/', null=True, blank=True)
     senha = models.CharField(max_length=128)
-    is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
+    # is_active = models.BooleanField(default=True)
+    # is_staff = models.BooleanField(default=False)
     last_login = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
@@ -53,8 +53,8 @@ class Minigame(models.Model):
 class Jogar(models.Model):
     usuario = models.ForeignKey(UsuarioNaoAdministrativo, on_delete=models.CASCADE, related_name='jogos')
     minigame = models.ForeignKey(Minigame, on_delete=models.CASCADE, related_name='jogadores')
-    pontuacao = models.IntegerField(default=0)
-    estrelas = models.IntegerField(default=0)
+    pontuacao = models.IntegerField(default=None, null=True, blank=True)
+    estrelas = models.IntegerField(default=None, null=True, blank=True)
     review = models.TextField(null=True, blank=True)
     denunciar = models.BooleanField(default=False)
     denunciar_detalhes = models.TextField(null=True, blank=True)

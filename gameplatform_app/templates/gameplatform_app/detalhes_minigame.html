@@ -23,13 +23,15 @@
     {% if avaliacoes %}
         <ul>
             {% for avaliacao in avaliacoes %}
-                <li>
-                    <strong>{{ avaliacao.usuario.nome }}</strong> - 
-                    {{ avaliacao.estrelas }} estrelas
-                    <br>
-                    <em>{{ avaliacao.review }}</em>
-                    <br>
-                </li>
+                {% if avaliacao.estrelas >= 0 %}
+                    <li>
+                        <strong>{{ avaliacao.usuario.nome }}</strong> - 
+                        {{ avaliacao.estrelas }} estrelas
+                        <br>
+                        <em>{{ avaliacao.review }}</em>
+                        <br>
+                    </li>
+                {% endif %}
             {% endfor %}
         </ul>
     {% else %}
