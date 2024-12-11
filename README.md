@@ -10,20 +10,37 @@ O objetivo deste projeto é implementar uma plataforma para a criação e o comp
 - **Desenvolvedores:** Criar, testar, publicar e gerenciar seus próprios minigames, utilizando ferramentas de edição e acesso a estatísticas.  
 - **Administradores:** Moderar a plataforma, gerenciar permissões, analisar denúncias e manter a segurança e qualidade do ambiente.  
 
-## Principais Funcionalidades  
+## Funcionalidades Implementadas  
+
+- Cadastro e login de usuários não administradores estão funcionais
 
 ### Para Jogadores  
-- Explorar uma biblioteca de minigames com filtros por popularidade, dificuldade, e categoria.  
-- Avaliar minigames e deixar comentários.  
-- Denunciar jogos que desrespeitem as diretrizes ou reportar bugs.  
-- Salvar pontuações e visualizar rankings globais.  
+- Selecionar minigame e visualizar detalhes
+- Avaliar
+- Denunciar
+- Visualizar avaliações de outros usuários
+- Reportar bugs da plataforma
 
-### Para Desenvolvedores  
-- Criar novos minigames utilizando ferramentas de edição e pré-visualização.  
-- Testar e publicar seus minigames para a comunidade.  
-- Consultar estatísticas de uso e feedback dos usuários.  
+## Para Executar
 
-### Para Administradores  
-- Gerenciar denúncias e moderar a plataforma, podendo excluir minigames ou banir usuários.  
-- Atualizar as diretrizes da comunidade.  
-- Acessar relatórios de bugs e denúncias para manter a integridade do sistema.  
+A plataforma pode ser acessada por meio dos segunintes passos:
+
+No diretório raiz:
+
+```bash
+  python manage.py makemigrations
+  python manage.py migrate
+  python manage.py runserver    
+```
+
+O comando makemigrations configura o DB com as tabelas especificadas em models.py, enquanto o migrate concluí essa configuração e, caso o DB estiver vazio (primeira execução), dispara um script que popula o DB com usuários e minigames. Isso foi necessário para poder implementar o que foi apresentado acima sem implementar a funcionalidade "Criar minigame". Por fim, o último comando inicializa o server de desenvolvimento, que pode ser acessado no endereço padrão http://127.0.0.1:8000/.
+
+Usuários criados automaticamente:
+
+| Email                   | Senha        |
+|-------------------------|--------------|
+| usuario1@example.com    | senha123     |
+| usuario2@example.com    | senha123     |
+| usuario3@example.com    | senha123     |
+
+Esses usuários podem ser utilizados para fins de teste, ou outros podem ser criados.
