@@ -21,6 +21,10 @@ O objetivo deste projeto é implementar uma plataforma para a criação e o comp
 - Visualizar avaliações de outros usuários
 - Reportar bugs da plataforma
 
+## Requisitos
+Python : 3.x ou superior
+Django : 3.x ou superior
+
 ## Para Executar
 
 A plataforma pode ser acessada por meio dos segunintes passos:
