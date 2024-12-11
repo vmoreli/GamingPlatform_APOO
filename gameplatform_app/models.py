@@ -9,9 +9,7 @@ class Usuario(models.Model):
     enderecoEmail = models.CharField(max_length=100)
     foto = models.ImageField(upload_to='usuarios/fotos/', null=True, blank=True)
     senha = models.CharField(max_length=128)
-    # is_active = models.BooleanField(default=True)
-    # is_staff = models.BooleanField(default=False)
-    last_login = models.DateTimeField(default=timezone.now)
+    last_login = models.DateTimeField(default=timezone.now) # campo necessario para usuario no django
 
     def __str__(self):
         return self.nome
@@ -60,11 +58,13 @@ class Jogar(models.Model):
     denunciar_detalhes = models.TextField(null=True, blank=True)
 
     def nova_avaliacao(self, estrelas, review):
+        """Preenche campos de avaliacao: detalhes e review"""
         self.estrelas = estrelas
         self.review = review
         self.save()
 
     def nova_denuncia(self, detalhes):
+        """Preenche campos de denuncia: detalhes e denuncia"""
         self.denunciar = True
         self.denunciar_detalhes = detalhes
         self.save()
@@ -86,5 +86,6 @@ class RelatoBugs(models.Model):
         return f"Bug relatado ({self.alvo}): {self.detalhes[:30]}"
     
     def set_detalhes(self, detalhes):
+        """Preenche campos de detalhes do bug"""
         self.detalhes = detalhes
         self.save()

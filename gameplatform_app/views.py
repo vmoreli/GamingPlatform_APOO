@@ -5,8 +5,9 @@ from .forms import CadastroForm, LoginForm, AvaliacaoForm, DenunciaForm, Relatar
 from django.shortcuts import render, get_object_or_404
 from .models import Minigame, Jogar, UsuarioNaoAdministrativo, RelatoBugs
 
+# View da tela inicial
 def home(request):
-    if not request.usuario:  # Verifica se o usuário está autenticado
+    if not request.usuario:  # Verifica se o usuário nao esta autenticado
         return redirect('login')
 
     # Obtem todos os minigames publicados
@@ -17,20 +18,23 @@ def home(request):
         'minigames': minigames,
     })
 
+# View que traz os detalhes do minigame selecionado
 def detalhes_minigame(request, id):
-    minigame = get_object_or_404(Minigame, pk=id)
-    info = minigame.carregar_info(id)
+    minigame = get_object_or_404(Minigame, pk=id)   # pega o minigame pela pk
+    info = minigame.carregar_info(id)   # retorna dict com info do minigame
 
-    if 'erro' in info:
+    if 'erro' in info:  # se o minigame nao foi encontrado
         return render(request, 'gameplatform_app/erro.html', {'mensagem': info['erro']})
     
     try:
-        usuario_nao_adm = UsuarioNaoAdministrativo.objects.get(pk=request.usuario.id)
+        usuario_nao_adm = UsuarioNaoAdministrativo.objects.get(pk=request.usuario.id)   # pega usuario nao adm logado
     except UsuarioNaoAdministrativo.DoesNotExist:
         return render(request, 'gameplatform_app/erro.html', {'mensagem': 'Apenas usuários não administrativos podem jogar.'})
     
+    # seleciona do DB ou cria se nao existir classe jogar entre usuario nao adm e minigame
     jogar, created = Jogar.objects.get_or_create(usuario=usuario_nao_adm, minigame=minigame)
 
+    # pega avaliacoes do minigame para mostrar na tela
     avaliacoes = Jogar.objects.filter(minigame_id=id)
     
     return render(request, 'gameplatform_app/detalhes_minigame.html', {
@@ -40,52 +44,55 @@ def detalhes_minigame(request, id):
         'usuario': request.usuario,
     })
 
+# View para cadastro de usuarios
 def cadastro_view(request):
     if request.method == 'POST':
-        form = CadastroForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
+        form = CadastroForm(request.POST, request.FILES)    # pega info digitada
+        if form.is_valid(): # valida forms
+            form.save() # salva no DB novo usuario
             messages.success(request, 'Cadastro realizado com sucesso!')
-            return redirect('login')
+            return redirect('login')    # redireciona para login
     else:
-        form = CadastroForm()
+        form = CadastroForm()   # forms para ser impresso na tela
     return render(request, 'gameplatform_app/cadastro.html', {'form': form})
 
+# View para login de usuários
 def login_view(request):
     if request.method == 'POST':
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            usuario = form.authenticate()
-            if usuario:
-                login(request, usuario)
-                request.session['usuario_id'] = usuario.id
+        form = LoginForm(request.POST)  # pega info digitada
+        if form.is_valid(): # valida forms
+            usuario = form.authenticate()   # tenta autenticar usuario
+            if usuario: # info correta, usuario autenticado
+                login(request, usuario) #realiza login
+                request.session['usuario_id'] = usuario.id  # salva id do usuario na sessao
                 messages.success(request, f'Bem-vindo, {usuario.nome}!')
-                print(usuario)
-                return redirect('home')
+                return redirect('home') # redireciona para tela inicial
             else:
-                messages.error(request, 'Email ou senha inválidos.')
+                messages.error(request, 'Email ou senha inválidos.')    # se autenticacao deu errado
     else:
         form = LoginForm()
     return render(request, 'gameplatform_app/login.html', {'form': form})
 
+# View para logout
 def logout_view(request):
     if 'usuario_id' in request.session:
-        del request.session['usuario_id']
+        del request.session['usuario_id']   # retira id do usuario da sessao
     messages.info(request, 'Você saiu da sua conta.')
-    return redirect('login')
+    return redirect('login')    # redireciona para tela de login
 
+# View paa avaliar o minigame
 def avaliar_minigame(request, id):
-    jogo = get_object_or_404(Jogar, usuario=request.usuario, minigame_id=id)
+    jogo = get_object_or_404(Jogar, usuario=request.usuario, minigame_id=id)    # pega classe jogar relativa ao usuario e jogo
 
     if request.method == 'POST':
-        form = AvaliacaoForm(request.POST)
-        if form.is_valid():
+        form = AvaliacaoForm(request.POST)  # pega info digitada
+        if form.is_valid(): # valida forms
             estrelas = form.cleaned_data['estrelas']
             review = form.cleaned_data['review']
-            jogo.nova_avaliacao(estrelas, review)
-            return redirect('detalhes_minigame', id=id)
+            jogo.nova_avaliacao(estrelas, review)   # preenche campos de avaliacao: estrelas e review no DB
+            return redirect('detalhes_minigame', id=id) # redireciona para tela de detalhes do minigame
     else:
-        form = AvaliacaoForm()
+        form = AvaliacaoForm()  # forms para ser impresso na tela
 
     return render(request, 'gameplatform_app/avaliar_minigame.html', {
         'form': form,
@@ -93,17 +100,18 @@ def avaliar_minigame(request, id):
         'id':id,
     })
 
+# View para denunciar minigame
 def denunciar_minigame(request, id):
-    jogo = get_object_or_404(Jogar, usuario=request.usuario, minigame_id=id)
+    jogo = get_object_or_404(Jogar, usuario=request.usuario, minigame_id=id)    # pega classe jogar relativa ao usuario e jogo
 
     if request.method == 'POST':
-        form = DenunciaForm(request.POST)
-        if form.is_valid():
+        form = DenunciaForm(request.POST)   # pega info digitada
+        if form.is_valid(): # valida forms
             detalhes = form.cleaned_data['detalhes']
-            jogo.nova_denuncia(detalhes)
-            return redirect('detalhes_minigame', id=id)
+            jogo.nova_denuncia(detalhes)    # preenche campos de denuncia: bool denuncia e detalhes no DB
+            return redirect('detalhes_minigame', id=id) # redireciona para tela de detalhes do minigame
     else:
-        form = DenunciaForm()
+        form = DenunciaForm()   # forms para ser impresso na tela
 
     return render(request, 'gameplatform_app/denunciar_minigame.html', {
         'form': form,
@@ -111,18 +119,16 @@ def denunciar_minigame(request, id):
         'id':id,
     })
 
+# View para reportar bugs
 def reportar_bug(request, id, alvo):
-    """
-    View para relatar bugs. O alvo é definido pelo parâmetro 'alvo', que pode ser 'minigame' ou 'plataforma'.
-    """
     jogo = None
-    if alvo == 'minigame':
+    if alvo == 'minigame':  # se o bug eh de um minigame, encontra a classe jogar relativa
         jogo = get_object_or_404(Jogar, usuario=request.usuario, minigame_id=id)
 
     if request.method == 'POST':
-        form = RelatarBugsForm(request.POST)
+        form = RelatarBugsForm(request.POST)    # pega info digitada
         
-        if form.is_valid():
+        if form.is_valid(): # valida forms
             detalhes = form.cleaned_data['detalhes']
             
             # Cria o objeto RelatoBugs e define os campos
@@ -131,7 +137,7 @@ def reportar_bug(request, id, alvo):
                 alvo=alvo,
                 detalhes=detalhes
             )
-            bug.save()
+            bug.save()  # salva o relato de bugs no DB
 
             return redirect('home')
     else:
