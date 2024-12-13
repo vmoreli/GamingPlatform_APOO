@@ -23,6 +23,7 @@ O objetivo deste projeto é implementar uma plataforma para a criação e o comp
 
 ## Requisitos
 Python : 3.x ou superior
+
 Django : 3.x ou superior
 
 ## Para Executar
